@@ -24,7 +24,6 @@ import android.widget.Toast
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.list.ItemListener
 import com.afollestad.materialdialogs.list.listItems
-import com.google.firebase.analytics.FirebaseAnalytics
 import com.aemerse.muserse.ApplicationClass
 import com.aemerse.muserse.R
 import com.aemerse.muserse.activity.ActivityPermissionSeek
@@ -373,13 +372,6 @@ object UtilityFun {
     //return MyApp.getPref().getBoolean(MyApp.getContext().getString(R.string.pref_remove_ads_after_payment),false);
     val isAdsRemoved: Boolean
         get() = true
-
-    //boolean hideAdsTemp = MyApp.getPref().getBoolean(MyApp.getContext().getString(R.string.pref_remove_ads_temp),false);
-    //return MyApp.getPref().getBoolean(MyApp.getContext().getString(R.string.pref_remove_ads_after_payment),false);
-    fun logEvent(bundle: Bundle) {
-        FirebaseAnalytics.getInstance(ApplicationClass.getContext())
-            .logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle)
-    }
 
     /**
      * This gives you a random number in between from (inclusive) and to (exclusive)

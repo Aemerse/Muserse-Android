@@ -32,7 +32,6 @@ import com.afollestad.materialdialogs.customview.customView
 import com.afollestad.materialdialogs.customview.getCustomView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
-import com.google.firebase.analytics.FirebaseAnalytics
 import com.aemerse.muserse.ApplicationClass
 import com.aemerse.muserse.R
 import com.aemerse.muserse.uiElementHelper.ColorHelper
@@ -60,7 +59,6 @@ import com.aemerse.muserse.utils.AppLaunchCountManager.instantLyricsLaunched
 import com.aemerse.muserse.utils.UtilityFun.launchYoutube
 import com.aemerse.muserse.utils.UtilityFun.filterArtistString
 import com.aemerse.muserse.utils.UtilityFun.isConnectedToInternet
-import com.aemerse.muserse.utils.UtilityFun.logEvent
 import com.nshmura.snappysmoothscroller.SnapType
 import com.nshmura.snappysmoothscroller.SnappyLayoutManager
 import com.nshmura.snappysmoothscroller.SnappyLinearLayoutManager
@@ -165,17 +163,6 @@ class ActivityInstantLyric : AppCompatActivity(), OnItemTouchListener, Lyrics.Ca
         if (!ApplicationClass.getPref().getBoolean(getString(R.string.pref_disclaimer_accepted), false)) {
             showDisclaimerDialog()
         }
-
-        /*final PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
-        if (pm != null) {
-            this.mWakeLock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "My Tag");
-        }*/
-        try {
-            val bundle = Bundle()
-            bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "instant_lyric_launched")
-            logEvent(bundle)
-        }
-        catch (ignored: Exception) { }
     }
 
     private fun growShrinkAnimate() {

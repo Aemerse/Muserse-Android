@@ -27,7 +27,6 @@ import com.afollestad.materialdialogs.customview.customView
 import com.afollestad.materialdialogs.customview.getCustomView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
-import com.google.firebase.analytics.FirebaseAnalytics
 import com.aemerse.muserse.ApplicationClass
 import com.aemerse.muserse.R
 import com.aemerse.muserse.uiElementHelper.BottomOffsetDecoration
@@ -301,14 +300,6 @@ class ActivityLyricView : AppCompatActivity(), View.OnClickListener,
         if (intent.extras == null) {
             finish()
             return
-        }
-        if (intent.extras!!.getBoolean("from_notif")) {
-            try {
-                val bundle: Bundle = Bundle()
-                bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "notification_clicked")
-                UtilityFun.logEvent(bundle)
-            } catch (ignored: Exception) {
-            }
         }
         mLyrics = intent.extras!!.get("lyrics") as Lyrics
         trackTitle = intent.extras!!.getString("track_title")

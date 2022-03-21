@@ -23,7 +23,6 @@ import com.aemerse.muserse.model.Constants
 import com.aemerse.muserse.uiElementHelper.ColorHelper
 import com.aemerse.muserse.utils.UtilityFun
 import com.afollestad.materialdialogs.MaterialDialog
-import com.google.firebase.analytics.FirebaseAnalytics
 import io.github.inflationx.viewpump.ViewPumpContextWrapper
 
 class ActivityAboutUs : AppCompatActivity() {
@@ -72,13 +71,6 @@ class ActivityAboutUs : AppCompatActivity() {
             window.setStatusBarColor(ColorHelper.GetStatusBarColor());
         }*/
         title = getString(R.string.title_about_us)
-        try {
-            val bundle = Bundle()
-            bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "about_us_launched")
-            UtilityFun.logEvent(bundle)
-        } catch (ignored: Exception) {
-        }
-
         coffee = getString(R.string.donate_coffee)
         beerBox = getString(R.string.donate_beer_box)
         beerBox = getString(R.string.donate_beer)

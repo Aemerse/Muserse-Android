@@ -47,19 +47,11 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.signature.ObjectKey
 import com.getkeepsafe.taptargetview.TapTarget
 import com.getkeepsafe.taptargetview.TapTargetView
-import com.google.android.gms.auth.api.Auth
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.android.gms.auth.api.signin.GoogleSignInResult
-import com.google.android.gms.common.ConnectionResult
-import com.google.android.gms.common.api.*
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
-import com.google.firebase.analytics.FirebaseAnalytics
-import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.aemerse.muserse.ApplicationClass
 import com.aemerse.muserse.R
 import com.aemerse.muserse.uiElementHelper.ColorHelper
@@ -76,8 +68,7 @@ import java.io.File
 import java.util.*
 import kotlin.collections.ArrayList
 
-
-class ActivityMain : AppCompatActivity(), ActionMode.Callback, NavigationView.OnNavigationItemSelectedListener, View.OnClickListener, PopupMenu.OnMenuItemClickListener, GoogleApiClient.OnConnectionFailedListener {
+class ActivityMain : AppCompatActivity(), ActionMode.Callback, NavigationView.OnNavigationItemSelectedListener, View.OnClickListener, PopupMenu.OnMenuItemClickListener {
     private val RC_LOGIN: Int = 100
     private var mLastClickTime: Long = 0
 
@@ -143,7 +134,6 @@ class ActivityMain : AppCompatActivity(), ActionMode.Callback, NavigationView.On
     private val mHandler: Handler = Handler()
     private var imm: InputMethodManager? = null
     private var currentPageSort: String = "" //holds the value for pref id for current page sort by
-    private var mGoogleApiClient: GoogleApiClient? = null
 
     //tab sequence
     var savedTabSeqInt: IntArray = intArrayOf(0, 1, 2, 3, 4, 5)
@@ -225,14 +215,6 @@ class ActivityMain : AppCompatActivity(), ActionMode.Callback, NavigationView.On
             }
         });*/
 
-
-        // Obtain the Firebase Analytics instance.
-        val firebaseAnalytics = FirebaseAnalytics.getInstance(this)
-        //Sets whether analytics collection is enabled for this app on this device.
-        firebaseAnalytics.setAnalyticsCollectionEnabled(true)
-
-        //Sets the duration of inactivity that terminates the current session. The default value is 1800000 (30 minutes).
-        firebaseAnalytics.setSessionTimeoutDuration(10000)
         navigationView!!.setNavigationItemSelectedListener(this)
         disableNavigationViewScrollbars()
 
@@ -394,13 +376,6 @@ class ActivityMain : AppCompatActivity(), ActionMode.Callback, NavigationView.On
         //ask for rating
         AppLaunchCountManager.app_launched(this)
         firstTimeInfoManage()
-        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestEmail()
-                .build()
-        mGoogleApiClient = GoogleApiClient.Builder(ApplicationClass.getContext())
-            .enableAutoManage(this, this)
-            .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
-            .build()
         setTextAndIconColor()
     }
 
@@ -1027,18 +1002,9 @@ class ActivityMain : AppCompatActivity(), ActionMode.Callback, NavigationView.On
             R.id.nav_rate -> {
                 setRateDialog()
             }
-            R.id.nav_signup -> {
-                signIn()
-            }
-            R.id.nav_logout -> {
-                signOut()
-            }
             R.id.nav_explore_lyrics -> {
                 startActivity(Intent(this, ActivityExploreLyrics::class.java))
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
-            }
-            R.id.nav_dev_message -> {
-                devMessageDialog()
             }
             R.id.nav_lyric_card -> {
                 lyricCardDialog()
@@ -1171,7 +1137,6 @@ class ActivityMain : AppCompatActivity(), ActionMode.Callback, NavigationView.On
     }
 */
     private fun lyricCardDialog() {
-        val link = FirebaseRemoteConfig.getInstance().getString("sample_lyric_card")
         val dialog: MaterialDialog = MaterialDialog(this)
             .title(R.string.nav_lyric_cards)
             .customView(R.layout.lyric_card_dialog,
@@ -1203,7 +1168,7 @@ class ActivityMain : AppCompatActivity(), ActionMode.Callback, NavigationView.On
             }
         })
         Glide.with(this)
-            .load(link)
+            .load(R.drawable.ic_cached_black_24dp)
             .diskCacheStrategy(DiskCacheStrategy.ALL)
             .transition(DrawableTransitionOptions.withCrossFade())
             .into(iv)
@@ -1233,41 +1198,6 @@ class ActivityMain : AppCompatActivity(), ActionMode.Callback, NavigationView.On
         } catch (e: Exception) {
             //e.toString();
         }
-    }
-
-    private fun devMessageDialog() {
-        if (ApplicationClass.getPref().getBoolean("new_dev_message", false)) {
-            ApplicationClass.getPref().edit().putBoolean("new_dev_message", false).apply()
-            updateNewDevMessageDot(false)
-        }
-        var message: String = FirebaseRemoteConfig.getInstance().getString("developer_message")
-        message = message.replace("$$", "\n\n")
-        val link: String = FirebaseRemoteConfig.getInstance().getString("link")
-        MaterialDialog(this)
-            .title(R.string.nav_developers_message)
-            .message(text = message) //.positiveButton(R.string.write_me)
-            .negativeButton(R.string.main_act_rate_dialog_pos){
-                val appPackageName: String =
-                    packageName // getPackageName() from Context or Activity object
-                try {
-                    startActivity(Intent(Intent.ACTION_VIEW,
-                        Uri.parse("market://details?id=$appPackageName")))
-                } catch (anfe: ActivityNotFoundException) {
-                    startActivity(Intent(Intent.ACTION_VIEW,
-                        Uri.parse("https://play.google.com/store/apps/details?id=$appPackageName")))
-                }
-            }
-            .positiveButton(R.string.title_click_me){
-                openUrl(Uri.parse(link))
-            }
-            /*.onNeutral(new MaterialDialog.SingleButtonCallback() {
-                    @Override
-                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        feedbackEmail();
-                    }
-                })*/
-
-            .show()
     }
 
     private fun setRateDialog() {
@@ -1377,35 +1307,6 @@ class ActivityMain : AppCompatActivity(), ActionMode.Callback, NavigationView.On
             .negativeButton(R.string.cancel)
             .customView(view = linear, scrollable =  true)
             .show()
-    }
-
-    override fun onStart() {
-        super.onStart()
-        loginSilently()
-    }
-
-    private fun loginSilently() {
-        //login silently to google
-        val opr: OptionalPendingResult<GoogleSignInResult> =
-            Auth.GoogleSignInApi.silentSignIn(mGoogleApiClient!!)
-        when {
-            opr.isDone -> {
-                // If the user's cached credentials are valid, the OptionalPendingResult will be "done"
-                // and the GoogleSignInResult will be available instantly.
-                Log.d(Constants.TAG, "Got cached sign-in")
-                val result: GoogleSignInResult = opr.get()
-                handleSignInResult(result, false)
-            }
-            else -> {
-                // If the user has not previously signed in on this device or the sign-in has expired,
-                // this asynchronous branch will attempt to sign in the user silently.  Cross-device
-                // single sign-on will occur in this branch.
-                //showProgressDialog();
-                opr.setResultCallback { googleSignInResult -> //hideProgressDialog();
-                    handleSignInResult(googleSignInResult, false)
-                }
-            }
-        }
     }
 
     override fun onDestroy() {
@@ -1636,14 +1537,6 @@ class ActivityMain : AppCompatActivity(), ActionMode.Callback, NavigationView.On
         return true
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == RC_SIGN_IN) {
-            val result = Auth.GoogleSignInApi.getSignInResultFromIntent(data!!)
-            handleSignInResult(result!!, true)
-        }
-    }
-
     private fun lockInfoDialog() {
         if (!ApplicationClass.getPref().getBoolean(getString(R.string.pref_show_lock_info_dialog), true)) {
             return
@@ -1723,62 +1616,6 @@ class ActivityMain : AppCompatActivity(), ActionMode.Callback, NavigationView.On
             .show()
     }
 
-    private fun signIn() {
-        val signInIntent: Intent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient!!)
-        startActivityForResult(signInIntent, RC_SIGN_IN)
-    }
-
-    private fun signOut() {
-        Auth.GoogleSignInApi.signOut(mGoogleApiClient!!).setResultCallback { //updateUI(false);
-            ApplicationClass.hasUserSignedIn = false
-            updateDrawerUI(null, null, false)
-            Snackbar.make(rootView!!, getString(R.string.signed_out), Snackbar.LENGTH_SHORT)
-                .show()
-        }
-    }
-
-    private fun handleSignInResult(result: GoogleSignInResult, manualSignIn: Boolean) {
-        Log.d(Constants.TAG, "handleSignInResult:" + result.isSuccess)
-        when {
-            result.isSuccess -> {
-                // Signed in successfully, show authenticated UI.
-                if (manualSignIn) {
-                    //permanently hide  sign in button on now playing activity
-                    ApplicationClass.getPref().edit().putBoolean("never_show_button_again", true).apply()
-                }
-                ApplicationClass.hasUserSignedIn = true
-                val acct: GoogleSignInAccount = result.signInAccount ?: return
-
-                var personPhotoUrl: String? = ""
-                if (acct.photoUrl != null) {
-                    personPhotoUrl = acct.photoUrl.toString()
-                }
-                updateDrawerUI(acct.displayName, personPhotoUrl, true)
-            }
-            else -> {
-                // some Error or user logged out, either case, update the drawer and give user appropriate info
-                ApplicationClass.hasUserSignedIn = false
-                updateDrawerUI(null, null, false)
-                if (manualSignIn) {
-                    when (result.status.statusCode) {
-                        CommonStatusCodes.NETWORK_ERROR -> {
-                            //Toast.makeText(this, "Network Error, try again later!", Toast.LENGTH_SHORT).show();
-                            Snackbar.make(rootView!!,
-                                getString(R.string.network_error),
-                                Snackbar.LENGTH_SHORT).show()
-                        }
-                        else -> {
-                            //Toast.makeText(this, "Unknown Error, try again later!", Toast.LENGTH_SHORT).show();
-                            Snackbar.make(rootView!!,
-                                getString(R.string.unknown_error),
-                                Snackbar.LENGTH_SHORT).show()
-                        }
-                    }
-                }
-            }
-        }
-    }
-
     private fun updateDrawerUI(displayName: String?, personPhotoUrl: String?, signedIn: Boolean) {
         val textView: TextView = navigationView!!.getHeaderView(0).findViewById(R.id.signed_up_user_name)
         if (displayName != null) {
@@ -1827,10 +1664,6 @@ class ActivityMain : AppCompatActivity(), ActionMode.Callback, NavigationView.On
         } else {
             navigationView!!.menu.findItem(R.id.nav_dev_message).actionView = null
         }
-    }
-
-    override fun onConnectionFailed(connectionResult: ConnectionResult) {
-        Log.d(Constants.TAG, "onConnectionFailed:$connectionResult")
     }
 
     var actionMode: ActionMode? = null

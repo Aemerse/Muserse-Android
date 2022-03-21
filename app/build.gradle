@@ -1,7 +1,6 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
-apply plugin: 'com.google.gms.google-services'
 
 android {
     compileSdk 31
@@ -87,14 +86,6 @@ dependencies {
 
     //Shine animation after clicking fav
     implementation 'com.sackcentury:shinebutton:1.0.0'
-
-    implementation 'com.google.firebase:firebase-core:20.1.1'
-    implementation 'com.google.android.gms:play-services-auth:20.1.0'
-    implementation 'com.google.firebase:firebase-messaging:23.0.2'
-    implementation 'com.google.firebase:firebase-database:20.0.4'
-    implementation 'com.google.firebase:firebase-invites:17.0.0'
-    implementation 'com.google.firebase:firebase-storage:20.0.1'
-    implementation 'com.google.firebase:firebase-config:21.0.2'
 
     //Gson
     implementation 'com.google.code.gson:gson:2.9.0'

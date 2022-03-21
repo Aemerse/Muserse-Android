@@ -22,7 +22,6 @@ import com.afollestad.materialdialogs.input.InputCallback
 import com.afollestad.materialdialogs.input.input
 import com.afollestad.materialdialogs.list.ItemListener
 import com.afollestad.materialdialogs.list.listItems
-import com.google.firebase.analytics.FirebaseAnalytics
 import com.aemerse.muserse.ApplicationClass
 import com.aemerse.muserse.R
 import com.aemerse.muserse.uiElementHelper.ColorHelper
@@ -292,12 +291,7 @@ class ActivityEqualizer : AppCompatActivity() {
         reverbSpinner!!.onItemSelectedListener = reverbListener
         enhanceSeekBar!!.setOnSeekBarChangeListener(enhanceListener)
         AsyncInitSlidersTask().execute(ApplicationClass.getService()?.getEqualizerHelper()?.getLastEquSetting())
-        try {
-            val bundle = Bundle()
-            bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "equalizer_launched")
-            UtilityFun.logEvent(bundle)
-        } catch (ignored: Exception) {
-        }
+
         equalizer50HzSeekBar!!.setOnTouchListener(listener)
         equalizer130HzSeekBar!!.setOnTouchListener(listener)
         equalizer320HzSeekBar!!.setOnTouchListener(listener)

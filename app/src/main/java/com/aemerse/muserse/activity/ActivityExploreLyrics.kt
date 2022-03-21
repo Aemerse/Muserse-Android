@@ -29,7 +29,6 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.customview.customView
 import com.afollestad.materialdialogs.customview.getCustomView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.firebase.analytics.FirebaseAnalytics
 import com.aemerse.muserse.ApplicationClass
 import com.aemerse.muserse.R
 import com.aemerse.muserse.adapter.TopTracksAdapter
@@ -117,12 +116,6 @@ class ActivityExploreLyrics : AppCompatActivity(), OnPopularTracksReady,
         }*/
         fab!!.backgroundTintList = ColorStateList.valueOf(ColorHelper.getWidgetColor())
         fab!!.setOnClickListener(this)
-        try {
-            val bundle: Bundle = Bundle()
-            bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "explore_lyrics_launched")
-            UtilityFun.logEvent(bundle)
-        } catch (ignored: Exception) {
-        }
     }
 
     private fun growShrinkAnimate() {
@@ -235,14 +228,6 @@ class ActivityExploreLyrics : AppCompatActivity(), OnPopularTracksReady,
             Log.d("ActivityExploreLyrics", "onCreate: search lyric dialog on startup")
             searchLyricDialog()
         }
-        if (intent.extras != null && intent.extras!!.getBoolean("from_notif")) {
-            try {
-                val bundle: Bundle = Bundle()
-                bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "notification_clicked")
-                UtilityFun.logEvent(bundle)
-            } catch (ignored: Exception) {
-            }
-        }
     }
 
     override fun onPause() {
@@ -277,13 +262,6 @@ class ActivityExploreLyrics : AppCompatActivity(), OnPopularTracksReady,
                     intent.putExtra("track_title", trackTitle.text.toString())
                     intent.putExtra("artist", finalArtistName)
                     startActivity(intent)
-                    try {
-                        val bundle = Bundle()
-                        bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE,
-                            "search_lyric_manually")
-                        UtilityFun.logEvent(bundle)
-                    } catch (ignored: Exception) {
-                    }
                 }, 1000)
             }
             .negativeButton(R.string.cancel)

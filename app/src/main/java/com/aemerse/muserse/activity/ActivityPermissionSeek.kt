@@ -15,19 +15,12 @@ import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import com.afollestad.materialdialogs.MaterialDialog
-import com.google.android.gms.tasks.Task
-import com.google.firebase.analytics.FirebaseAnalytics
-import com.google.firebase.remoteconfig.FirebaseRemoteConfig
-import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings
 import com.aemerse.muserse.ApplicationClass
 import com.aemerse.muserse.R
-import com.aemerse.muserse.fcm.CountryInfo
 import com.aemerse.muserse.model.Constants
 import com.aemerse.muserse.service.PlayerService
-import com.aemerse.muserse.utils.UtilityFun
+import com.afollestad.materialdialogs.MaterialDialog
 import io.github.inflationx.viewpump.ViewPumpContextWrapper
-
 
 class ActivityPermissionSeek : AppCompatActivity() {
     private val MY_PERMISSIONS_REQUEST: Int = 0
@@ -78,51 +71,6 @@ class ActivityPermissionSeek : AppCompatActivity() {
         //checkForDeepLink();
         //}
         changeSettingsForVersion()
-        CountryInfo().start()
-        try {
-            initializeRemoteConfig()
-        } catch (e: Exception) {
-            //unknown crash in firebase library
-            Log.d("ActivityPermissionSeek", "onCreate: " + e.localizedMessage)
-        }
-        //log selected font to know which font is used maximum
-        //logFont();
-    }
-
-    private fun initializeRemoteConfig() {
-        val mRemoteConfig: FirebaseRemoteConfig = FirebaseRemoteConfig.getInstance()
-        val remoteConfigSettings: FirebaseRemoteConfigSettings =
-            FirebaseRemoteConfigSettings.Builder()
-                .setMinimumFetchIntervalInSeconds(60)
-                .build()
-        mRemoteConfig.setConfigSettingsAsync(remoteConfigSettings)
-        mRemoteConfig.setDefaultsAsync(R.xml.remote_config_defaults)
-
-        // cache expiration in seconds
-        val cacheExpiration: Long = 3600L //1 hour
-
-        //expire the cache immediately for development mode .
-        /*if (mRemoteConfig.getInfo().getConfigSettings().isDeveloperModeEnabled()) {
-            cacheExpiration = 0;
-        }*/
-
-        // fetch
-        mRemoteConfig.fetch(cacheExpiration)
-            .addOnCompleteListener(this) { task: Task<Void?> ->
-                Log.d("ActivityPermissionSeek", "onComplete: ")
-                if (task.isSuccessful) {
-                    mRemoteConfig.fetchAndActivate()
-                    val message: String =
-                        FirebaseRemoteConfig.getInstance().getString("developer_message")
-
-                    //new developer message, update UI
-                    if (ApplicationClass.getPref().getString("developer_message", "") != message) {
-                        ApplicationClass.getPref().edit().putString("developer_message", message)
-                            .apply()
-                        ApplicationClass.getPref().edit().putBoolean("new_dev_message", true).apply()
-                    }
-                }
-            }
     }
 
     private fun permissionDetailsDialog() {
@@ -241,9 +189,6 @@ class ActivityPermissionSeek : AppCompatActivity() {
                 Constants.TYPEFACE.MANROPE -> fontString = "MANROPE"
                 Constants.TYPEFACE.ASAP -> fontString = "ASAP"
             }
-            val bundle = Bundle()
-            bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, fontString)
-            UtilityFun.logEvent(bundle)
             ApplicationClass.getPref().edit().putBoolean(getString(R.string.pref_font_already_logged), true).apply()
         } catch (ignored: Exception) {
         }

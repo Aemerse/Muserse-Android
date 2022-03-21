@@ -29,7 +29,6 @@ import com.afollestad.materialdialogs.list.listItems
 import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.flexbox.JustifyContent
-import com.google.firebase.messaging.FirebaseMessaging
 import com.aemerse.muserse.ApplicationClass
 import com.aemerse.muserse.R
 import com.aemerse.muserse.uiElementHelper.ColorHelper
@@ -375,13 +374,6 @@ class ActivitySettings : AppCompatActivity() {
                                     ApplicationClass.getPref().edit()
                                         .putBoolean(getString(R.string.pref_notifications), false)
                                         .apply()
-                                    try {
-                                        if (country != null) {
-                                            FirebaseMessaging.getInstance().unsubscribeFromTopic(country)
-                                        }
-                                        FirebaseMessaging.getInstance().unsubscribeFromTopic("ab_music")
-                                    } catch (ignored: Exception) {
-                                    }
                                     notifications.isChecked = false
                                 }
                                 else -> {
@@ -389,13 +381,6 @@ class ActivitySettings : AppCompatActivity() {
                                         .putBoolean(getString(R.string.pref_notifications), true)
                                         .apply()
                                     notifications.isChecked = true
-                                    try {
-                                        if (country != null) {
-                                            FirebaseMessaging.getInstance().subscribeToTopic(country)
-                                        }
-                                        FirebaseMessaging.getInstance().subscribeToTopic("ab_music")
-                                    } catch (ignored: Exception) {
-                                    }
                                 }
                             }
                         }

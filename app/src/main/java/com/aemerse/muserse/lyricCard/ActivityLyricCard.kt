@@ -38,10 +38,6 @@ import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.getkeepsafe.taptargetview.TapTarget
 import com.getkeepsafe.taptargetview.TapTargetSequence
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.aemerse.muserse.ApplicationClass
@@ -204,37 +200,6 @@ class ActivityLyricCard : AppCompatActivity(), View.OnTouchListener {
                     && urls != null)
         ) {
             imagesAdapter.setUrls(urls)
-        } else {
-            FirebaseDatabase.getInstance().reference.child("cardlinksNew")
-                .addListenerForSingleValueEvent(object : ValueEventListener {
-                    override fun onDataChange(dataSnapshot: DataSnapshot) {
-                        Log.d("ActivityLyricCard", "onDataChange: ")
-                        val urls: MutableMap<String, String> = LinkedHashMap()
-                        for (snap: DataSnapshot in dataSnapshot.children) {
-                            try {
-                                val map: MutableMap<String, String> = snap.value as MutableMap<String, String>
-                               // urls[map["thumb"]] = map["image"]
-                            } catch (ignored: Exception) {
-                            }
-                        }
-                        imagesAdapter.setUrls(urls)
-
-                        //cache links in shared pref
-                        ApplicationClass.getPref().edit()
-                            .putString(getString(R.string.pref_card_image_links),
-                                Gson().toJson(urls)).apply()
-                        ApplicationClass.getPref().edit()
-                            .putLong(getString(R.string.pref_card_image_saved_at),
-                                System.currentTimeMillis()).apply()
-                    }
-
-                    override fun onCancelled(databaseError: DatabaseError) {
-                        Log.d("ActivityLyricCard", "onCancelled: " + databaseError.message)
-                        Toast.makeText(this@ActivityLyricCard,
-                            "Error retrieving images from server",
-                            Toast.LENGTH_SHORT).show()
-                    }
-                })
         }
         initiateDragView()
         brightnessSeekBar!!.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
