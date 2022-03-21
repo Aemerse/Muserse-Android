@@ -49,16 +49,16 @@ android {
         viewBinding true
         dataBinding true
     }
-
-    lintOptions {
-        abortOnError = false
+    lint {
+        abortOnError false
         disable 'MissingTranslation'
     }
+
 }
 
 dependencies {
-    implementation 'androidx.appcompat:appcompat:1.4.0'
-    implementation 'com.google.android.material:material:1.4.0'
+    implementation 'androidx.appcompat:appcompat:1.4.1'
+    implementation 'com.google.android.material:material:1.5.0'
     implementation 'androidx.cardview:cardview:1.0.0'
 
     //slide up panel for now playing view
@@ -68,8 +68,8 @@ dependencies {
     implementation 'com.squareup:seismic:1.0.3'
 
     //Glide
-    implementation 'com.github.bumptech.glide:glide:4.12.0'
-    kapt 'com.github.bumptech.glide:compiler:4.12.0'
+    implementation 'com.github.bumptech.glide:glide:4.13.1'
+    kapt 'com.github.bumptech.glide:compiler:4.13.1'
 
     //Blur Images
     implementation 'jp.wasabeef:blurry:4.0.1'
@@ -88,16 +88,16 @@ dependencies {
     //Shine animation after clicking fav
     implementation 'com.sackcentury:shinebutton:1.0.0'
 
-    implementation 'com.google.firebase:firebase-core:20.0.2'
-    implementation 'com.google.android.gms:play-services-auth:20.0.0'
-    implementation 'com.google.firebase:firebase-messaging:23.0.0'
-    implementation 'com.google.firebase:firebase-database:20.0.3'
+    implementation 'com.google.firebase:firebase-core:20.1.1'
+    implementation 'com.google.android.gms:play-services-auth:20.1.0'
+    implementation 'com.google.firebase:firebase-messaging:23.0.2'
+    implementation 'com.google.firebase:firebase-database:20.0.4'
     implementation 'com.google.firebase:firebase-invites:17.0.0'
-    implementation 'com.google.firebase:firebase-storage:20.0.0'
-    implementation 'com.google.firebase:firebase-config:21.0.1'
+    implementation 'com.google.firebase:firebase-storage:20.0.1'
+    implementation 'com.google.firebase:firebase-config:21.0.2'
 
     //Gson
-    implementation 'com.google.code.gson:gson:2.8.9'
+    implementation 'com.google.code.gson:gson:2.9.0'
 
     //Crop Images
     implementation 'com.theartofdev.edmodo:android-image-cropper:2.8.0'
@@ -125,5 +125,5 @@ dependencies {
     //retrofit
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
-    implementation 'com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.3'
+    implementation 'com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.6'
 }
