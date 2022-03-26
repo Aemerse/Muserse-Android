@@ -437,7 +437,7 @@ class ActivitySecondaryLibrary : AppCompatActivity(), View.OnClickListener,
                     request.into(albumArtIv!!)
 
                     //albumArtIv.setImageBitmap(playerService!!.getAlbumArt());
-                    if (playerService!!.getStatus() === playerService!!.PLAYING) {
+                    if (playerService!!.getStatus() == playerService!!.PLAYING) {
                         buttonPlay!!.setImageDrawable(ContextCompat.getDrawable(this,
                             R.drawable.ic_pause_black_24dp))
                     } else {
@@ -490,7 +490,7 @@ class ActivitySecondaryLibrary : AppCompatActivity(), View.OnClickListener,
                 mLastClickTime = SystemClock.elapsedRealtime()
                 playerService!!.play()
                 playerService!!.PostNotification()
-                if (playerService!!.getStatus() === playerService!!.PLAYING) {
+                if (playerService!!.getStatus() == playerService!!.PLAYING) {
                     buttonPlay!!.setImageDrawable(ContextCompat.getDrawable(this,
                         R.drawable.ic_pause_black_24dp))
                 } else {

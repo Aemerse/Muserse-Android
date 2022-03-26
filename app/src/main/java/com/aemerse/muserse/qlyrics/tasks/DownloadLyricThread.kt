@@ -75,7 +75,7 @@ class DownloadLyricThread constructor(
                 "ViewLyrics" -> lyrics = ViewLyrics.fromURL(url, artist, title)
             }
             if (lyrics.isLRC() && !positionAvailable) continue
-            if (lyrics.getFlag() === Lyrics.POSITIVE_RESULT) return lyrics
+            if (lyrics.getFlag() == Lyrics.POSITIVE_RESULT) return lyrics
         }
         return Lyrics(Lyrics.NO_RESULT)
     }
@@ -102,7 +102,7 @@ class DownloadLyricThread constructor(
                 }
             }
             if (lyrics.isLRC() && !positionAvailable) continue
-            if (lyrics.getFlag() === Lyrics.POSITIVE_RESULT) return lyrics
+            if (lyrics.getFlag() == Lyrics.POSITIVE_RESULT) return lyrics
         }
         return lyrics
     }
@@ -111,7 +111,7 @@ class DownloadLyricThread constructor(
         if (lyrics != null) {
 
             //put lyrics in db
-            if (item != null && lyrics.getFlag() === Lyrics.POSITIVE_RESULT) {
+            if (item != null && lyrics.getFlag() == Lyrics.POSITIVE_RESULT) {
                 Log.v(Constants.L_TAG, lyrics.getOriginalArtist()!!)
                 // Log.v(Constants.L_TAG,lyrics.getSource()+" ");
                 Log.v(Constants.L_TAG, lyrics.isLRC().toString() + " lrc")

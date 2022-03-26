@@ -257,14 +257,14 @@ object ViewLyrics {
 //                                // Log.v(Constants.L_TAG+"chavan 0.5",output.replaceAll("\\[", "\n\\[ "));
 //                                result.setText(output.replace("\\[".toRegex(), "\n\\[ "))
 //                            }
-//                            if (item != null && result.getFlag() === Lyrics.POSITIVE_RESULT) {
+//                            if (item != null && result.getFlag() == Lyrics.POSITIVE_RESULT) {
 //                                // Log.v(Constants.L_TAG,lyrics.getText() );
 //                                OfflineStorageLyrics.clearLyricsFromDB(item)
 //                                OfflineStorageLyrics.putLyricsInDB(result, item)
 //                            }
 //
 //                            //if from instant lyric activity, delete current lyrics from cache
-//                            if (result.getFlag() === POSITIVE_RESULT) {
+//                            if (result.getFlag() == POSITIVE_RESULT) {
 //                                OfflineStorageLyrics.clearLyricsFromCache(result)
 //                            }
 //                            handler.post { callback.onLyricsDownloaded(result) }

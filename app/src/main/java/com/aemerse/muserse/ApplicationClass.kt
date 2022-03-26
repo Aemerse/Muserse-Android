@@ -11,7 +11,6 @@ import io.github.inflationx.calligraphy3.CalligraphyConfig
 import io.github.inflationx.calligraphy3.CalligraphyInterceptor
 import io.github.inflationx.viewpump.ViewPump
 
-
 class ApplicationClass : Application() {
     override fun onCreate() {
         super.onCreate()

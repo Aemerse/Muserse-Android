@@ -15,6 +15,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.aemerse.muserse.R
+import kotlin.math.min
 
 class FastScroller : LinearLayout {
     private val scrollListener: ScrollListener = ScrollListener()
@@ -112,18 +113,14 @@ class FastScroller : LinearLayout {
 
     private fun getValueInRange(min: Int, max: Int, value: Int): Int {
         val minimum: Int = Math.max(min, value)
-        return Math.min(minimum, max)
+        return min(minimum, max)
     }
 
     private fun setBubbleAndHandlePosition(y: Float) {
         val bubbleHeight: Int = bubble!!.height
         val handleHeight: Int = handle!!.height
-        handle!!.y = getValueInRange(0,
-            heightHere - handleHeight,
-            (y - handleHeight / 2).toInt()).toFloat()
-        bubble!!.y = getValueInRange(0,
-            heightHere - bubbleHeight - (handleHeight / 2),
-            (y - bubbleHeight).toInt()).toFloat()
+        handle!!.y = getValueInRange(0, heightHere - handleHeight, (y - handleHeight / 2).toInt()).toFloat()
+        bubble!!.y = getValueInRange(0, heightHere - bubbleHeight - (handleHeight / 2), (y - bubbleHeight).toInt()).toFloat()
     }
 
     @SuppressLint("ObjectAnimatorBinding")

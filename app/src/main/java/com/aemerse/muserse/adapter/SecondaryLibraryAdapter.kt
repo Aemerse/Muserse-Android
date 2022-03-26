@@ -240,18 +240,6 @@ class SecondaryLibraryAdapter : RecyclerView.Adapter<SecondaryLibraryAdapter.MyV
                     .putExtra("position", position)
                     .putExtra("id", editItem.id))
             }
-            R.id.action_set_as_ringtone -> {
-                val tempItem: TrackItem? = MusicLibrary.instance.getTrackItemFromId(
-                    dataItems[position].id)
-                if (tempItem == null) {
-                    Toast.makeText(context,
-                        context.getString(R.string.error_something_wrong),
-                        Toast.LENGTH_LONG).show()
-                    //Snackbar.make(viewParent, "Something went wrong!", Snackbar.LENGTH_SHORT).show();
-                    return false
-                }
-                UtilityFun.SetRingtone(context, tempItem.getFilePath(), tempItem.id)
-            }
         }
         if ((item.title == REMOVE)) {
             PlaylistManager.getInstance(ApplicationClass.getContext())!!.RemoveSongFromPlaylistNew(playlist_name!!, dataItems!!.get(position).id)

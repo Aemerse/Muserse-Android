@@ -251,7 +251,6 @@ class MainLibraryAdapter(fl: FragmentLibrary?, private val context: Context, dat
                 val inflater: MenuInflater = popup!!.menuInflater
                 inflater.inflate(R.menu.menu_tracks_by_title, popup!!.menu)
                 if (fl!!.getStatus() !== Constants.FRAGMENT_STATUS.TITLE_FRAGMENT) {
-                    popup!!.menu.removeItem(R.id.action_set_as_ringtone)
                     popup!!.menu.removeItem(R.id.action_track_info)
                     popup!!.menu.removeItem(R.id.action_edit_track_info)
                 }
@@ -286,9 +285,6 @@ class MainLibraryAdapter(fl: FragmentLibrary?, private val context: Context, dat
             R.id.action_delete -> deleteDialog()
             R.id.action_play_next -> addToQ(Constants.ADD_TO_Q.IMMEDIATE_NEXT)
             R.id.action_add_to_q -> addToQ(Constants.ADD_TO_Q.AT_LAST)
-            R.id.action_set_as_ringtone -> UtilityFun.SetRingtone(context,
-                filteredDataItems[position].file_path,
-                filteredDataItems[position].id)
             R.id.action_track_info -> setTrackInfoDialog()
             R.id.action_edit_track_info -> {
                 context.startActivity(Intent(context, ActivityTagEditor::class.java)
@@ -400,7 +396,7 @@ class MainLibraryAdapter(fl: FragmentLibrary?, private val context: Context, dat
         if (playerService == null) return
         when (fl!!.getStatus()) {
             Constants.FRAGMENT_STATUS.TITLE_FRAGMENT -> {
-                if (playerService.getStatus() === playerService.PLAYING) playerService.pause()
+                if (playerService.getStatus() == playerService.PLAYING) playerService.pause()
                 id_list.clear()
                 for (d: dataItem in filteredDataItems) {
                     id_list.add(d.id)

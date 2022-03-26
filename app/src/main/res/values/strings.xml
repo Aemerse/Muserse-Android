@@ -476,7 +476,6 @@
     <string name="title_remove_ads">Remove Ads</string>
     <string name="title_text_font">Font</string>
     <string name="title_misc">Miscellaneous</string>
-    <string name="title_try_my_new_app">AB Remote Wallpaper</string>
     <string name="title_ringtone_cutter">Ringtone Cutter</string>
     <string name="title_continous_playback">Continuous Playback</string>
     <string name="title_batch_download">Batch Lyrics Download</string>
@@ -582,16 +581,6 @@
     <string name="notification_channel">channel_01</string>
     <string name="trending_now_in">Top tracks in %s (from Last.fm)</string>
 
-
-    <!-- Misc -->
-    <string name="developers_message">Hey there, this is AB here. \n\n
-        I am glad you are enjoying Muserse and it needs your help.
-        To reach global audience, Muserse needs to be translated to regional languages and if you happen to know one and can translate English to that, please contribute!
-        Write me to know more on how to get started with translations.
-        \n\n
-        If you like Muserse and want to thank me, there is nothing in this world which will make me happier than good review from you on play store. So do leave your feedback.
-    </string>
-    <string name="write_me">Write me</string>
 
     <string name="data_saver_content">Prevent loading Artist Images instead of default artwork by turning on data saver. \n\n Though it is recommended to keep it in default setting as it
         highly affects look and feel of Muserse. All the artist images are cached locally to prevent data usage in either case.
@@ -959,6 +948,4 @@
         <item>#1496bb</item>
         <item>#43abc9</item>
     </string-array>
-
-
 </resources>

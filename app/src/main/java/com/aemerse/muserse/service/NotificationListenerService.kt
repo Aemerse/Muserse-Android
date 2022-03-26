@@ -21,7 +21,6 @@ import com.aemerse.muserse.activity.ActivityInstantLyric
 import com.aemerse.muserse.model.Constants
 import java.util.concurrent.Executors
 
-
 class NotificationListenerService : NotificationListenerService(), RemoteController.OnClientUpdateListener {
     private var mController: RemoteController? = null
     private var isRemoteControllerPlaying: Boolean = false
@@ -42,8 +41,7 @@ class NotificationListenerService : NotificationListenerService(), RemoteControl
             getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager?
         val notificationIntent: Intent = Intent(this, ActivityInstantLyric::class.java)
         notificationIntent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
-        contentIntent = PendingIntent.getActivity(this, 0,
-            notificationIntent, 0)
+        contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0)
         listener = object : MediaSessionManager.OnActiveSessionsChangedListener {
             override fun onActiveSessionsChanged(controllers: List<MediaController>?) {
                 val controller = controllers?.get(0)
@@ -51,8 +49,7 @@ class NotificationListenerService : NotificationListenerService(), RemoteControl
                 if (controller != null) {
                     if ((("com.google.android.youtube" == controller.packageName) || ("com.aemerse.music" == controller.packageName) || ("com.android.chrome" == controller.packageName) || ("org.videolan.vlc" == controller.packageName))) return
                 }
-                if (controllerCallback != null) controller?.unregisterCallback(
-                    controllerCallback!!)
+                if (controllerCallback != null) controller?.unregisterCallback(controllerCallback!!)
                 controllerCallback = object : MediaController.Callback() {
 
                     override fun onPlaybackStateChanged(state: PlaybackState?) {
@@ -149,7 +146,13 @@ class NotificationListenerService : NotificationListenerService(), RemoteControl
             Log.d("NotificationListener", "broadcastControllerState: metadata null ")
             return
         }
+        if (metadata.getString(MediaMetadata.METADATA_KEY_ARTIST) == null) {
+            return
+        }
         val artist: String = metadata.getString(MediaMetadata.METADATA_KEY_ARTIST)
+        if (metadata.getString(MediaMetadata.METADATA_KEY_TITLE) == null) {
+            return
+        }
         val track: String = metadata.getString(MediaMetadata.METADATA_KEY_TITLE)
         Log.d("NotificationListener",
             "broadcastControllerState: track info $artist : $track")
@@ -206,12 +209,6 @@ class NotificationListenerService : NotificationListenerService(), RemoteControl
                     .setContentIntent(contentIntent)
             builder.setVisibility(VISIBILITY_PUBLIC)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                /* Create or update. */
-                /*NotificationChannel channel = new NotificationChannel("channel_02",
-                                "Instant Lyrics",
-                                NotificationManager.IMPORTANCE_LOW);
-                        channel.setSound(null, null);
-                        mNotificationManager.createNotificationChannel(channel);*/
                 builder.setChannelId("channel_02")
             }
             val notification: Notification = builder.build()

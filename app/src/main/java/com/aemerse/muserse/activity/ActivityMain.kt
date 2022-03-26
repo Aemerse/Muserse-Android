@@ -2,7 +2,10 @@ package com.aemerse.muserse.activity
 
 import android.annotation.SuppressLint
 import android.app.ActivityOptions
-import android.content.*
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.content.res.ColorStateList
@@ -21,15 +24,12 @@ import android.view.*
 import android.view.animation.AnimationUtils
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
-import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.ActionMode
 import androidx.appcompat.widget.PopupMenu
 import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.core.view.GravityCompat
-import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
@@ -37,38 +37,32 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.viewpager.widget.ViewPager
 import butterknife.BindView
 import butterknife.ButterKnife
+import com.aemerse.muserse.ApplicationClass
+import com.aemerse.muserse.R
+import com.aemerse.muserse.model.Constants
+import com.aemerse.muserse.model.MusicLibrary
+import com.aemerse.muserse.model.PlaylistManager
+import com.aemerse.muserse.service.PlayerService
+import com.aemerse.muserse.uiElementHelper.ColorHelper
+import com.aemerse.muserse.uiElementHelper.TypeFaceHelper
+import com.aemerse.muserse.utils.AppLaunchCountManager
+import com.aemerse.muserse.utils.UtilityFun
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.customview.customView
-import com.afollestad.materialdialogs.customview.getCustomView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestBuilder
-import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.signature.ObjectKey
 import com.getkeepsafe.taptargetview.TapTarget
 import com.getkeepsafe.taptargetview.TapTargetView
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.android.material.navigation.NavigationView
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
-import com.aemerse.muserse.ApplicationClass
-import com.aemerse.muserse.R
-import com.aemerse.muserse.uiElementHelper.ColorHelper
-import com.aemerse.muserse.uiElementHelper.TypeFaceHelper
-import com.aemerse.muserse.customViews.RoundedImageView
-import com.aemerse.muserse.model.Constants
-import com.aemerse.muserse.model.MusicLibrary
-import com.aemerse.muserse.model.PlaylistManager
-import com.aemerse.muserse.service.PlayerService
-import com.aemerse.muserse.utils.AppLaunchCountManager
-import com.aemerse.muserse.utils.UtilityFun
 import io.github.inflationx.viewpump.ViewPumpContextWrapper
 import java.io.File
 import java.util.*
-import kotlin.collections.ArrayList
 
-class ActivityMain : AppCompatActivity(), ActionMode.Callback, NavigationView.OnNavigationItemSelectedListener, View.OnClickListener, PopupMenu.OnMenuItemClickListener {
+class ActivityMain : AppCompatActivity(), ActionMode.Callback, View.OnClickListener, PopupMenu.OnMenuItemClickListener {
     private val RC_LOGIN: Int = 100
     private var mLastClickTime: Long = 0
 
@@ -97,12 +91,6 @@ class ActivityMain : AppCompatActivity(), ActionMode.Callback, NavigationView.On
 
     @JvmField @BindView(R.id.mini_player)
     var miniPlayer: View? = null
-
-    @JvmField @BindView(R.id.nav_view)
-    var navigationView: NavigationView? = null
-
-    @JvmField @BindView(R.id.drawer_bg)
-    var navViewBack: ImageView? = null
 
     @JvmField @BindView(R.id.fab_right_side)
     var fab_right_side: FloatingActionButton? = null
@@ -205,33 +193,7 @@ class ActivityMain : AppCompatActivity(), ActionMode.Callback, NavigationView.On
         setContentView(R.layout.activity_main)
         ButterKnife.bind(this)
 
-        /*seekBar = findViewById(R.id.seekbar);
-        seekBar.setMax(100);
-        seekBar.setPadding(0,0,0,0);
-        seekBar.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                return true;
-            }
-        });*/
-
-        navigationView!!.setNavigationItemSelectedListener(this)
-        disableNavigationViewScrollbars()
-
-        //navigationView.setBackgroundDrawable(ColorHelper.getColoredThemeGradientDrawable());
-
-        //findViewById(R.id.app_bar_layout).setBackgroundColor(ColorHelper.getPrimaryColor());
-        //findViewById(R.id.tabs).setBackgroundColor(ColorHelper.getPrimaryColor());
-
-        //findViewById(R.id.gradientBackGroundView)
-        //      .setBackgroundDrawable(ColorHelper.GetGradientDrawable());
-
-        /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Window window = getWindow();
-            //window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            //window.setStatusBarColor(ColorHelper.getDarkPrimaryColor());
-            //window.setStatusBarColor(ColorHelper.GetStatusBarColor());
-        }*/title = getString(R.string.abm_title)
+        title = getString(R.string.abm_title)
         imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         //mHandler = new Handler();
         val toolbar: Toolbar = findViewById<Toolbar>(R.id.toolbar)
@@ -259,24 +221,6 @@ class ActivityMain : AppCompatActivity(), ActionMode.Callback, NavigationView.On
         miniPlayer!!.setOnClickListener(this)
         buttonPlay!!.setOnClickListener(this)
         buttonNext!!.setOnClickListener(this)
-        val drawer = findViewById<DrawerLayout>(R.id.drawer_layout)
-        val toggle: ActionBarDrawerToggle = object : ActionBarDrawerToggle(
-            this,
-            drawer,
-            toolbar,
-            R.string.navigation_drawer_open,
-            R.string.navigation_drawer_close) {
-            override fun onDrawerSlide(drawerView: View, slideOffset: Float) {
-                super.onDrawerSlide(drawerView, slideOffset)
-                Log.d("onDrawerSlide", "onDrawerSlide: " + slideOffset / 2)
-                rootView!!.translationX = slideOffset / 2 * drawerView.width
-                drawer.bringChildToFront(drawerView)
-                drawer.requestLayout()
-            }
-        }
-        drawer.addDrawerListener(toggle)
-        toggle.syncState()
-
 
         //get tab sequence
         val savedTabSeq = ApplicationClass.getPref().getString(getString(R.string.pref_tab_seq), Constants.TABS.DEFAULT_SEQ)
@@ -292,11 +236,6 @@ class ActivityMain : AppCompatActivity(), ActionMode.Callback, NavigationView.On
             1 -> setBlurryBackgroundForMainLib()
         }
 
-        // 0 - System default   1 - custom
-        when (ApplicationClass.getPref().getInt(getString(R.string.pref_nav_library_back), 0)) {
-            0 -> navViewBack!!.setBackgroundDrawable(ColorHelper.getGradientDrawable())
-            1 -> setBlurryBackgroundForNav()
-        }
         setupViewPager(viewPager!!)
         viewPager!!.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             override fun onPageScrolled(
@@ -386,12 +325,6 @@ class ActivityMain : AppCompatActivity(), ActionMode.Callback, NavigationView.On
         buttonNext.setColorFilter(ColorHelper.getPrimaryTextColor());*/
     }
 
-    private fun disableNavigationViewScrollbars() {
-        if (navigationView != null) {
-            navigationView!!.getChildAt(0)?.isVerticalScrollBarEnabled = false
-        }
-    }
-
     private fun setSystemDefaultBackground() {
         //findViewById(R.id.image_view_view_pager).setBackgroundDrawable(ColorHelper.getBaseThemeDrawable());
         gradientOverlay!!.visibility = View.VISIBLE
@@ -408,13 +341,6 @@ class ActivityMain : AppCompatActivity(), ActionMode.Callback, NavigationView.On
                 .toString())) //.placeholder(R.drawable.back2)
             //.centerCrop()
             .into(findViewById(R.id.image_view_view_pager)!!)
-    }
-
-    fun setBlurryBackgroundForNav() {
-        Glide.with(this)
-            .load(Uri.fromFile(File(ApplicationClass.getContext().filesDir.toString() + getString(R.string.nav_back_custom_image))))
-            .signature(ObjectKey(System.currentTimeMillis().toString()))
-            .into(navViewBack!!)
     }
 
     override fun attachBaseContext(newBase: Context) {
@@ -643,7 +569,7 @@ class ActivityMain : AppCompatActivity(), ActionMode.Callback, NavigationView.On
                             .placeholder(R.drawable.music)
                             .into(albumArt!!)
                     }
-                    if (playerService!!.getStatus() === playerService!!.PLAYING) buttonPlay!!.setImageDrawable(
+                    if (playerService!!.getStatus() == playerService!!.PLAYING) buttonPlay!!.setImageDrawable(
                         ContextCompat.getDrawable(this,
                             R.drawable.ic_pause_black_24dp)) else buttonPlay!!.setImageDrawable(
                         ContextCompat.getDrawable(this, R.drawable.ic_play_arrow_black_24dp))
@@ -721,12 +647,8 @@ class ActivityMain : AppCompatActivity(), ActionMode.Callback, NavigationView.On
     }
 
     override fun onBackPressed() {
-        val drawer: DrawerLayout = findViewById(R.id.drawer_layout)
         val count: Int = supportFragmentManager.backStackEntryCount
         when {
-            drawer.isDrawerOpen(GravityCompat.START) -> {
-                drawer.closeDrawer(GravityCompat.START)
-            }
             count > 0 -> {
                 findViewById<View>(R.id.mini_player).visibility = View.VISIBLE
                 supportFragmentManager.popBackStack()
@@ -986,197 +908,6 @@ class ActivityMain : AppCompatActivity(), ActionMode.Callback, NavigationView.On
         }
     }
 
-    override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        // Handle navigation view item clicks here.
-        when (item.itemId) {
-            R.id.nav_settings -> {
-                startActivity(Intent(this, ActivitySettings::class.java)
-                    .putExtra("launchedFrom", Constants.PREF_LAUNCHED_FROM.DRAWER)
-                    .putExtra("ad", true))
-                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
-                finish()
-            }
-            R.id.nav_share -> {
-                shareApp()
-            }
-            R.id.nav_rate -> {
-                setRateDialog()
-            }
-            R.id.nav_explore_lyrics -> {
-                startActivity(Intent(this, ActivityExploreLyrics::class.java))
-                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
-            }
-            R.id.nav_lyric_card -> {
-                lyricCardDialog()
-            }
-            192 -> {
-                //uploadPhotos();
-            }
-            R.id.nav_saved_lyrics -> {
-                startActivity(Intent(this, ActivitySavedLyrics::class.java))
-                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
-            }
-            R.id.nav_ringtone_cutter -> {
-                showRingtoneCutterDialog()
-            }
-        }
-        val drawer: DrawerLayout = findViewById(R.id.drawer_layout)
-        drawer.closeDrawer(GravityCompat.START)
-        return true
-    }
-
-    private fun showRingtoneCutterDialog() {
-        MaterialDialog(this)
-            .title(R.string.action_ringtone_cutter)
-            .message(R.string.dialog_ringtone_cutter)
-            .positiveButton(R.string.dialog_rington_cutter_button)
-            .show()
-    }
-
-    /**
-     * upload lyric card photos
-     */
-    /*private void uploadPhotos(){
-        Log.d("ActivityMain", "uploadPhotos: ");
-
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        final DatabaseReference myRef = database.getReference("cardlinksNew");
-
-        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                final int numberOfLinks =((int) dataSnapshot.getChildrenCount());
-
-                Executors.newSingleThreadExecutor().execute(new Runnable() {
-                    @Override
-                    public void run() {
-
-
-                        File dir =new File(Environment.getExternalStorageDirectory().toString() + "/upload/compressjpeg");
-
-                        File[] files = dir.listFiles();
-                        for(int i=numberOfLinks; i<files.length+numberOfLinks; i++){
-
-                            if(files[i-numberOfLinks].isDirectory()) continue;
-
-                            File thumbFile = new File(dir + "/thumb/" + files[i-numberOfLinks].getName().replace(".jpg","") + "_tn.jpg" );
-                            StorageReference uploadedFileThumb = FirebaseStorage.getInstance().getReference().child("cardimages").child(thumbFile.getName());
-                            final UploadTask uploadTaskThumb = uploadedFileThumb.putFile(Uri.fromFile(thumbFile));
-                            Log.d("ActivityMain", "run: Uploading " + thumbFile.getName());
-
-                            final String[] thumbUrl = new String[1];
-                            uploadTaskThumb.addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    Log.d("ActivityMain", "onFailure: " + e.getLocalizedMessage());
-                                }
-                            }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                                @Override
-                                public void onSuccess(final UploadTask.TaskSnapshot taskSnapshot) {
-                                    Log.d("ActivityMain", "onSuccess: " + taskSnapshot.getUploadSessionUri());
-                                    thumbUrl[0] = taskSnapshot.getDownloadUrl().toString();
-                                }
-                            });
-
-                            try {
-                                com.google.android.gms.tasks.Tasks.await(uploadTaskThumb);
-                            }catch (UnsupportedOperationException e){
-                                e.printStackTrace();
-                            }
-                            catch (InterruptedException e) {
-                                e.printStackTrace();
-                            } catch (ExecutionException e) {
-                                e.printStackTrace();
-                            }
-
-                            StorageReference uploadedFile = FirebaseStorage.getInstance().getReference().child("cardimages").child(files[i-numberOfLinks].getName());
-                            final UploadTask uploadTask = uploadedFile.putFile(Uri.fromFile(files[i-numberOfLinks]));
-                            Log.d("ActivityMain", "run: Uploading " + files[i-numberOfLinks].getName());
-
-                            final int finalI = i;
-                            uploadTask.addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    Log.d("ActivityMain", "onFailure: " + e.getLocalizedMessage());
-                                }
-                            }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                                @Override
-                                public void onSuccess(final UploadTask.TaskSnapshot taskSnapshot) {
-                                    Log.d("ActivityMain", "onSuccess: " + taskSnapshot.getDownloadUrl());
-                                    if(taskSnapshot.getDownloadUrl()==null)  return;
-
-                                    Map<String, String> image = new HashMap<>();
-                                    image.put("thumb", thumbUrl[0]);
-                                    image.put("image", taskSnapshot.getDownloadUrl().toString());
-                                    myRef.child(Integer.toString(finalI)).setValue(image);
-
-                                    Toast.makeText(playerService, "Uploaded : " + taskSnapshot.getDownloadUrl().toString(), Toast.LENGTH_SHORT).show();
-                                }
-                            });
-
-                            try {
-                                com.google.android.gms.tasks.Tasks.await(uploadTask);
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            } catch (ExecutionException e) {
-                                e.printStackTrace();
-                            } catch (Exception e){
-                                e.printStackTrace();
-                            }
-                        }
-                    }
-                });
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-
-    }
-*/
-    private fun lyricCardDialog() {
-        val dialog: MaterialDialog = MaterialDialog(this)
-            .title(R.string.nav_lyric_cards)
-            .customView(R.layout.lyric_card_dialog,
-                scrollable = false) //.content(R.string.dialog_lyric_card_content)
-            .positiveButton(R.string.dialog_lyric_card_pos){
-                val searchLyricIntent =
-                    Intent(ApplicationClass.getContext(), ActivityExploreLyrics::class.java)
-                searchLyricIntent.action = Constants.ACTION.MAIN_ACTION
-                searchLyricIntent.putExtra("search_on_launch", true)
-                searchLyricIntent.putExtra("from_notif", false)
-                startActivity(searchLyricIntent)
-            }
-            .negativeButton(R.string.cancel)
-            .neutralButton(text = "Know more"){
-                openUrl(Uri.parse(LYRIC_CARD_GIF))
-            }
-
-        val iv: ImageView = dialog.getCustomView().findViewById(R.id.sample_album_card)
-        iv.viewTreeObserver.addOnGlobalLayoutListener(object :
-            ViewTreeObserver.OnGlobalLayoutListener {
-            override fun onGlobalLayout() {
-                Log.d("Tag", "lyricCardDialog: width " + iv.measuredWidth)
-                val params: ViewGroup.LayoutParams = iv.layoutParams
-                params.width = iv.measuredWidth
-                params.height = iv.measuredWidth
-                // existing height is ok as is, no need to edit it
-                iv.layoutParams = params
-                iv.viewTreeObserver.removeGlobalOnLayoutListener(this)
-            }
-        })
-        Glide.with(this)
-            .load(R.drawable.ic_cached_black_24dp)
-            .diskCacheStrategy(DiskCacheStrategy.ALL)
-            .transition(DrawableTransitionOptions.withCrossFade())
-            .into(iv)
-
-        //dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
-        dialog.show()
-    }
-
     private fun openUrl(parse: Uri) {
         try {
             val browserIntent = Intent(Intent.ACTION_VIEW, parse)
@@ -1198,45 +929,6 @@ class ActivityMain : AppCompatActivity(), ActionMode.Callback, NavigationView.On
         } catch (e: Exception) {
             //e.toString();
         }
-    }
-
-    private fun setRateDialog() {
-        val linear = LinearLayout(this)
-        linear.orientation = LinearLayout.VERTICAL
-        val text = TextView(this)
-        text.text = getString(R.string.main_act_rate_us)
-        text.typeface = TypeFaceHelper.getTypeFace(this)
-        text.setPadding(20, 10, 20, 10)
-        text.textSize = 16f
-        //text.setGravity(Gravity.CENTER);
-        val ratingWrap: LinearLayout = LinearLayout(this)
-        ratingWrap.orientation = LinearLayout.VERTICAL
-        ratingWrap.gravity = Gravity.CENTER
-        val ratingBar: RatingBar = RatingBar(this)
-        ratingBar.layoutParams = ViewGroup.LayoutParams(
-            ViewGroup.LayoutParams.WRAP_CONTENT,
-            ViewGroup.LayoutParams.WRAP_CONTENT)
-        //ratingBar.setNumStars(5);
-        ratingBar.rating = 5f
-        ratingWrap.addView(ratingBar)
-        linear.addView(text)
-        linear.addView(ratingWrap)
-        MaterialDialog(this)
-            .title(R.string.main_act_rate_dialog_title) // .content(getString(R.string.lyric_art_info_content))
-            .positiveButton(R.string.main_act_rate_dialog_pos){
-                val appPackageName: String =
-                    packageName // getPackageName() from Context or Activity object
-                try {
-                    startActivity(Intent(Intent.ACTION_VIEW,
-                        Uri.parse("market://details?id=$appPackageName")))
-                } catch (anfe: ActivityNotFoundException) {
-                    startActivity(Intent(Intent.ACTION_VIEW,
-                        Uri.parse("https://play.google.com/store/apps/details?id=$appPackageName")))
-                }
-            }
-            .negativeButton(R.string.cancel)
-            .customView(view = linear, scrollable =  true)
-            .show()
     }
 
     private fun setSleepTimerDialog() {
@@ -1316,7 +1008,6 @@ class ActivityMain : AppCompatActivity(), ActionMode.Callback, NavigationView.On
             viewPager!!.clearOnPageChangeListeners()
             viewPager = null
             viewPagerAdapter = null
-            navigationView!!.setNavigationItemSelectedListener(null)
         } catch (e: NullPointerException) {
             Log.d("TAG", "onDestroy: destroy called because of null player service")
         }
@@ -1352,7 +1043,7 @@ class ActivityMain : AppCompatActivity(), ActionMode.Callback, NavigationView.On
                 }
                 mLastClickTime = SystemClock.elapsedRealtime()
                 playerService!!.play()
-                if (playerService!!.getStatus() === playerService!!.PLAYING) {
+                if (playerService!!.getStatus() == playerService!!.PLAYING) {
                     buttonPlay!!.setImageDrawable(ContextCompat.getDrawable(this,
                         R.drawable.ic_pause_black_24dp))
                 } else {
@@ -1616,56 +1307,6 @@ class ActivityMain : AppCompatActivity(), ActionMode.Callback, NavigationView.On
             .show()
     }
 
-    private fun updateDrawerUI(displayName: String?, personPhotoUrl: String?, signedIn: Boolean) {
-        val textView: TextView = navigationView!!.getHeaderView(0).findViewById(R.id.signed_up_user_name)
-        if (displayName != null) {
-            textView.text = displayName
-        } else {
-            textView.text = ""
-        }
-        val imageView: RoundedImageView = navigationView!!.getHeaderView(0).findViewById(R.id.navHeaderImageView)
-        if (personPhotoUrl != null) {
-            Glide.with(applicationContext).load(personPhotoUrl)
-                .thumbnail(0.5f)
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .into(imageView)
-        } else {
-            when (ApplicationClass.getPref().getInt(getString(R.string.pref_default_album_art), 0)) {
-                0 -> imageView.setImageResource(R.drawable.music)
-                1 -> imageView.setImageDrawable(UtilityFun.defaultAlbumArtDrawable)
-            }
-        }
-        navigationView!!.menu.clear() //clear old inflated items.
-        if (signedIn) {
-            navigationView!!.inflateMenu(R.menu.drawer_menu_logged_in)
-        } else {
-            navigationView!!.inflateMenu(R.menu.drawer_menu_logged_out)
-        }
-
-        //set red dot if new developer message arrives
-        if (ApplicationClass.getPref().getBoolean("new_dev_message", false)) {
-            updateNewDevMessageDot(true)
-        }
-
-        //navigationView.getMenu().findItem(R.id.nav_lyric_card).setActionView(R.layout.nav_item_lyric_card);  //showing new icon with color red
-
-        //add upload image button
-        /*if(BuildConfig.DEBUG){
-            navigationView.getMenu().add(R.id.grp2, 192, 10,"Upload");
-        }*/
-
-        //updateNavigationMenuItems();
-    }
-
-    private fun updateNewDevMessageDot(set: Boolean) {
-        if (set) {
-            navigationView!!.menu.findItem(R.id.nav_dev_message)
-                .setActionView(R.layout.nav_item_dev_message)
-        } else {
-            navigationView!!.menu.findItem(R.id.nav_dev_message).actionView = null
-        }
-    }
-
     var actionMode: ActionMode? = null
     override fun onCreateActionMode(mode: ActionMode, menu: Menu): Boolean {
         if (actionMode != null) {
@@ -1734,10 +1375,6 @@ class ActivityMain : AppCompatActivity(), ActionMode.Callback, NavigationView.On
     }
 
     companion object {
-        val WEBSITE: String = "http://www.thetechguru.in"
-        val GITHUB: String = "https://github.com/akshaaatt/Muserse"
-        val LYRIC_CARD_GIF: String = "https://media.giphy.com/media/2w6JlMibDu9ZL9xVuB/giphy.gif"
         val NOTIFY_BACK_PRESSED: String = "BACK_PRESSED"
-        private val RC_SIGN_IN: Int = 7
     }
 }

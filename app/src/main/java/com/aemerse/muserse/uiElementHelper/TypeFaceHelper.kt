@@ -6,7 +6,6 @@ import com.aemerse.muserse.ApplicationClass
 import com.aemerse.muserse.R
 import com.aemerse.muserse.model.Constants
 
-
 object TypeFaceHelper {
     private var typeface: Typeface? = null
     private var typefacePath: String = ""

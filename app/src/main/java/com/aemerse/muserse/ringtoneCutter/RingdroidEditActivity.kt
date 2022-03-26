@@ -377,7 +377,7 @@ class RingdroidEditActivity : AppCompatActivity(), MarkerView.MarkerListener,
 
     override fun markerTouchMove(marker: MarkerView?, x: Float) {
         val delta: Float = x - mTouchStart
-        if (marker === mStartMarker) {
+        if (marker == mStartMarker) {
             mStartPos = trap((mTouchInitialStartPos + delta).toInt())
             mEndPos = trap((mTouchInitialEndPos + delta).toInt())
         } else {
@@ -389,7 +389,7 @@ class RingdroidEditActivity : AppCompatActivity(), MarkerView.MarkerListener,
 
     override fun markerTouchEnd(marker: MarkerView?) {
         mTouchDragging = false
-        if (marker === mStartMarker) {
+        if (marker == mStartMarker) {
             setOffsetGoalStart()
         } else {
             setOffsetGoalEnd()
@@ -398,13 +398,13 @@ class RingdroidEditActivity : AppCompatActivity(), MarkerView.MarkerListener,
 
     override fun markerLeft(marker: MarkerView?, velocity: Int) {
         mKeyDown = true
-        if (marker === mStartMarker) {
+        if (marker == mStartMarker) {
             val saveStart: Int = mStartPos
             mStartPos = trap(mStartPos - velocity)
             mEndPos = trap(mEndPos - (saveStart - mStartPos))
             setOffsetGoalStart()
         }
-        if (marker === mEndMarker) {
+        if (marker == mEndMarker) {
             if (mEndPos == mStartPos) {
                 mStartPos = trap(mStartPos - velocity)
                 mEndPos = mStartPos
@@ -418,7 +418,7 @@ class RingdroidEditActivity : AppCompatActivity(), MarkerView.MarkerListener,
 
     override fun markerRight(marker: MarkerView?, velocity: Int) {
         mKeyDown = true
-        if (marker === mStartMarker) {
+        if (marker == mStartMarker) {
             val saveStart: Int = mStartPos
             mStartPos += velocity
             if (mStartPos > mMaxPos) mStartPos = mMaxPos
@@ -426,7 +426,7 @@ class RingdroidEditActivity : AppCompatActivity(), MarkerView.MarkerListener,
             if (mEndPos > mMaxPos) mEndPos = mMaxPos
             setOffsetGoalStart()
         }
-        if (marker === mEndMarker) {
+        if (marker == mEndMarker) {
             mEndPos += velocity
             if (mEndPos > mMaxPos) mEndPos = mMaxPos
             setOffsetGoalEnd()
@@ -442,7 +442,7 @@ class RingdroidEditActivity : AppCompatActivity(), MarkerView.MarkerListener,
 
     override fun markerFocus(marker: MarkerView?) {
         mKeyDown = false
-        if (marker === mStartMarker) {
+        if (marker == mStartMarker) {
             setOffsetGoalStartNoUpdate()
         } else {
             setOffsetGoalEndNoUpdate()

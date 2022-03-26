@@ -20,7 +20,7 @@ import androidx.recyclerview.widget.RecyclerView
 /**
  * Listener for manual initiation of a drag.
  */
-open interface OnStartDragListener {
+interface OnStartDragListener {
     /**
      * Called when a view is requesting a start of a drag.
      *

@@ -2,11 +2,11 @@ package com.aemerse.muserse.customViews
 
 import android.content.Context
 import android.graphics.*
-import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatImageView
 import kotlin.math.min
+
 
 class RoundedImageView : AppCompatImageView {
 
@@ -22,8 +22,7 @@ class RoundedImageView : AppCompatImageView {
         if (width == 0 || height == 0) {
             return
         }
-        val b: Bitmap = (drawable.current as BitmapDrawable).bitmap
-        val bitmap: Bitmap = b.copy(Bitmap.Config.ARGB_8888, true)
+        val bitmap = Bitmap.createBitmap(drawable.intrinsicWidth, drawable.intrinsicHeight, Bitmap.Config.ARGB_8888)
         val w: Int = width
         val h: Int = height
         val roundBitmap: Bitmap = getCroppedBitmap(bitmap, w)

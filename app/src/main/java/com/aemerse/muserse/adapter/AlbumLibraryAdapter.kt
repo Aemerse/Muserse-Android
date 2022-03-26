@@ -172,7 +172,6 @@ class AlbumLibraryAdapter constructor(private val context: Context, data: ArrayL
                 val popup = PopupMenu(context, view)
                 val inflater: MenuInflater = popup.menuInflater
                 inflater.inflate(R.menu.menu_tracks_by_title, popup.menu)
-                popup.menu.removeItem(R.id.action_set_as_ringtone)
                 popup.menu.removeItem(R.id.action_track_info)
                 popup.menu.removeItem(R.id.action_edit_track_info)
                 popup.menu.removeItem(R.id.action_exclude_folder)

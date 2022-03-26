@@ -9,9 +9,8 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-    <uses-permission android:name="com.android.vending.BILLING" />
     <uses-permission android:name="android.permission.BLUETOOTH"/>
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.WRITE_SETTINGS"
         tools:ignore="ProtectedPermissions" />
 
@@ -186,13 +185,6 @@
             android:screenOrientation="portrait">
         </activity>
 
-        <activity
-            android:name="com.aemerse.muserse.activity.ActivityInvite"
-            android:theme="@style/AppTheme"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait">
-        </activity>
-
         <activity android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
             android:theme="@style/Base.Theme.AppCompat"/> <!-- optional (needed if default theme has no action bar) -->
 
@@ -233,16 +225,6 @@
                 <action android:name="android.service.notification.NotificationListenerService"/>
             </intent-filter>
         </service>
-
-        <service
-            android:name="com.aemerse.muserse.fcm.MyFirebaseMessagingService"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
-            </intent-filter>
-        </service>
-
-        <service android:name="com.aemerse.muserse.fcm.MyFirebaseMessagingService$GeneratePictureStyleNotification$NotificationActionService" />
 
         <receiver android:name="com.aemerse.muserse.widget.WidgetReceiver"
             android:exported="false">

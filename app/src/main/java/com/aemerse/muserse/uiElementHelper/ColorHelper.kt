@@ -13,7 +13,6 @@ import com.aemerse.muserse.ApplicationClass
 import com.aemerse.muserse.R
 import com.aemerse.muserse.model.Constants
 
-
 object ColorHelper {
     fun getPrimaryColor(): Int {
         //return Color.parseColor("#E91E63")
@@ -206,7 +205,7 @@ object ColorHelper {
      * @return
      */
     fun getWidgetColor(): Int {
-        when (ApplicationClass.Companion.getSelectedThemeId()) {
+        when (ApplicationClass.getSelectedThemeId()) {
             1 -> return getDarkColor(getColor(R.color.theme1_color2_widget), 1f)
             2 -> return getDarkColor(getColor(R.color.theme2_color2_widget), 0.7f)
             3 -> return getDarkColor(getColor(R.color.theme3_color2_widget), 1f)

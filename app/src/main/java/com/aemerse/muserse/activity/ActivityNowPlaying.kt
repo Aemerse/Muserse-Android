@@ -272,7 +272,7 @@ class ActivityNowPlaying : AppCompatActivity(), View.OnClickListener, OnStartDra
                 }
 
                 //2 lyrics fragment
-                if (position == 2 && playerService!!.getStatus() === playerService!!.PLAYING) {
+                if (position == 2 && playerService!!.getStatus() == playerService!!.PLAYING) {
                     acquireWindowPowerLock(true)
                 } else {
                     acquireWindowPowerLock(false)
@@ -447,7 +447,7 @@ class ActivityNowPlaying : AppCompatActivity(), View.OnClickListener, OnStartDra
                 val intent: Intent = Intent().setAction(Constants.ACTION.UPDATE_LYRIC_AND_INFO)
                 LocalBroadcastManager.getInstance(applicationContext).sendBroadcast(intent)
                 Log.v(Constants.TAG, "Intent sent! " + intent.action)
-                if (playerService!!.getStatus() === playerService!!.PLAYING) {
+                if (playerService!!.getStatus() == playerService!!.PLAYING) {
                     mPlayButton!!.setImageDrawable(resources.getDrawable(R.drawable.pw_pause))
                 } else {
                     mPlayButton!!.setImageDrawable(resources.getDrawable(R.drawable.pw_play))
@@ -819,16 +819,6 @@ class ActivityNowPlaying : AppCompatActivity(), View.OnClickListener, OnStartDra
             R.id.action_search_youtube -> if (playerService!!.getCurrentTrack() != null) {
                 UtilityFun.launchYoutube(this, trackItem!!.getArtist() + " - " + trackItem.title)
             }
-            R.id.action_set_as_ringtone -> if (trackItem != null) {
-                val abPath: String = trackItem.getFilePath()
-                UtilityFun.SetRingtone(this,
-                    abPath,
-                    MusicLibrary.instance.getIdFromFilePath(abPath))
-            } else {
-                Snackbar.make(rootView!!,
-                    getString(R.string.main_act_empty_lib),
-                    Snackbar.LENGTH_SHORT).show()
-            }
         }
         return super.onOptionsItemSelected(item)
     }
@@ -887,7 +877,7 @@ class ActivityNowPlaying : AppCompatActivity(), View.OnClickListener, OnStartDra
         }
         when (view.id) {
             R.id.save_queue_button -> {
-                if (mAdapter!!.itemCount === 0) {
+                if (mAdapter!!.itemCount == 0) {
                     return
                 }
                 val input = EditText(this)
@@ -968,7 +958,7 @@ class ActivityNowPlaying : AppCompatActivity(), View.OnClickListener, OnStartDra
         LocalBroadcastManager.getInstance(applicationContext)
             .sendBroadcast(Intent(Constants.ACTION.DISC_UPDATE))
         (viewPagerAdapter!!.getItem(2) as FragmentLyrics).runLyricThread()
-        if (viewPager!!.currentItem == 2 && playerService!!.getStatus() === playerService!!.PLAYING) {
+        if (viewPager!!.currentItem == 2 && playerService!!.getStatus() == playerService!!.PLAYING) {
             acquireWindowPowerLock(true)
         } else {
             acquireWindowPowerLock(false)
@@ -1136,7 +1126,7 @@ class ActivityNowPlaying : AppCompatActivity(), View.OnClickListener, OnStartDra
                 textInsideRepeat!!.text = ""
             }
         }
-        if (playerService!!.getStatus() === playerService!!.PLAYING) {
+        if (playerService!!.getStatus() == playerService!!.PLAYING) {
             mPlayButton!!.setImageDrawable(resources.getDrawable(R.drawable.pw_pause))
         } else {
             mPlayButton!!.setImageDrawable(resources.getDrawable(R.drawable.pw_play))
@@ -1270,7 +1260,7 @@ class ActivityNowPlaying : AppCompatActivity(), View.OnClickListener, OnStartDra
             return
         }
         playerService!!.play()
-        if (playerService!!.getStatus() === playerService!!.PLAYING) {
+        if (playerService!!.getStatus() == playerService!!.PLAYING) {
             mPlayButton!!.setImageDrawable(resources.getDrawable(R.drawable.pw_pause))
             startUpdateTask()
         } else {
@@ -1286,7 +1276,7 @@ class ActivityNowPlaying : AppCompatActivity(), View.OnClickListener, OnStartDra
     }
 
     private fun startUpdateTask() {
-        if (!updateTimeTaskRunning && playerService!!.getStatus() === playerService!!.PLAYING) {
+        if (!updateTimeTaskRunning && playerService!!.getStatus() == playerService!!.PLAYING) {
             stopProgressRunnable = false
             Executors.newSingleThreadExecutor().execute(mUpdateTimeTask)
         }

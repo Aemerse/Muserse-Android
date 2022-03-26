@@ -170,7 +170,7 @@ class FragmentLyrics : Fragment(), RecyclerView.OnItemTouchListener, Lyrics.Call
             // }
             return
         }
-        if ((mLyrics != null) && (mLyrics!!.getFlag() === Lyrics.POSITIVE_RESULT) && (mLyrics!!.getTrackId() !== -1) && (mLyrics!!.getTrackId() === item!!.id)) {
+        if ((mLyrics != null) && (mLyrics!!.getFlag() == Lyrics.POSITIVE_RESULT) && (mLyrics!!.getTrackId() !== -1) && (mLyrics!!.getTrackId() == item!!.id)) {
             onLyricsDownloaded(mLyrics)
             return
         }
@@ -233,7 +233,7 @@ class FragmentLyrics : Fragment(), RecyclerView.OnItemTouchListener, Lyrics.Call
         lyricLoadAnimation!!.hide()
         mLyrics = lyrics
         if (layout != null) {
-            if (lyrics.getFlag() === Lyrics.POSITIVE_RESULT) {
+            if (lyrics.getFlag() == Lyrics.POSITIVE_RESULT) {
                 //  lrcView.setVisibility(View.VISIBLE);
                 //lrcView.setOriginalLyrics(lyrics);
                 //lrcView.setSourceLrc(lyrics.getText());
@@ -293,7 +293,7 @@ class FragmentLyrics : Fragment(), RecyclerView.OnItemTouchListener, Lyrics.Call
         gestureDetector = GestureDetectorCompat(context, RecyclerViewDemoOnGestureListener())
         layoutManager = recyclerView!!.layoutManager as LinearLayoutManager
         fLyricUpdaterThreadCancelled = false
-        if (!fIsStaticLyrics && (playerService!!.getStatus() === playerService!!.PLAYING) && !fIsLyricUpdaterThreadRunning) {
+        if (!fIsStaticLyrics && (playerService!!.getStatus() == playerService!!.PLAYING) && !fIsLyricUpdaterThreadRunning) {
             Executors.newSingleThreadExecutor().execute(lyricUpdater)
             scrollLyricsToCurrentLocation()
         }
@@ -322,7 +322,7 @@ class FragmentLyrics : Fragment(), RecyclerView.OnItemTouchListener, Lyrics.Call
     }
 
     private fun startLyricUpdater() {
-        if (!fIsStaticLyrics && !fIsLyricUpdaterThreadRunning && (playerService!!.getStatus() === playerService!!.PLAYING)) {
+        if (!fIsStaticLyrics && !fIsLyricUpdaterThreadRunning && (playerService!!.getStatus() == playerService!!.PLAYING)) {
             Log.d("FragmentLyrics", "startLyricUpdater: starting lyric updater")
             fLyricUpdaterThreadCancelled = false
             Executors.newSingleThreadExecutor().execute(lyricUpdater)
@@ -390,7 +390,7 @@ class FragmentLyrics : Fragment(), RecyclerView.OnItemTouchListener, Lyrics.Call
 
     fun runLyricThread() {
         isLyricsLoaded = false
-        if (!fIsStaticLyrics && !fIsLyricUpdaterThreadRunning && (playerService!!.getStatus() === playerService!!.PLAYING)) {
+        if (!fIsStaticLyrics && !fIsLyricUpdaterThreadRunning && (playerService!!.getStatus() == playerService!!.PLAYING)) {
             fLyricUpdaterThreadCancelled = false
             Executors.newSingleThreadExecutor().execute(lyricUpdater)
         } else {

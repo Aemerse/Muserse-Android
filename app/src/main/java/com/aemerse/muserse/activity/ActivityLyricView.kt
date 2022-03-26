@@ -54,7 +54,6 @@ import java.net.URL
 import java.util.*
 import java.util.concurrent.Executors
 
-
 class ActivityLyricView : AppCompatActivity(), View.OnClickListener,
     RecyclerView.OnItemTouchListener, Lyrics.Callback, ActionMode.Callback, ArtistInfo.Callback {
     private var handler: Handler? = null
@@ -539,8 +538,8 @@ class ActivityLyricView : AppCompatActivity(), View.OnClickListener,
         OfflineStorageLyrics.putLyricsToCache(lyrics)
         lyricLoadAnimation!!.hide()
         mLyrics = lyrics
-        when {
-            lyrics.getFlag() === Lyrics.POSITIVE_RESULT -> {
+        when (Lyrics.POSITIVE_RESULT) {
+            lyrics.getFlag() -> {
                 lyricStatus!!.visibility = View.GONE
                 recyclerView!!.visibility = View.VISIBLE
                 lyricStatus!!.visibility = View.GONE
@@ -646,7 +645,7 @@ class ActivityLyricView : AppCompatActivity(), View.OnClickListener,
         adapter!!.toggleSelection(idx)
         //String title = adapter.getSelectedItemCount();
         //actionMode.setTitle(title);
-        if (adapter!!.getSelectedItemCount() === 0) {
+        if (adapter!!.getSelectedItemCount() == 0) {
             actionMode!!.finish()
             actionMode = null
             return

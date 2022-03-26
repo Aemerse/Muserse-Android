@@ -123,8 +123,7 @@ class FolderLibraryAdapter constructor(private val context: Context) :
         val view: View = inflater!!.inflate(R.layout.fragment_library_item, parent, false)
         viewParent = parent
         //stub=((ViewStub)view.findViewById(R.id.stub_in_fragment_library_item)).inflate();
-        val holder: MyViewHolder = MyViewHolder(view)
-        //int color = ColorHelper.getPrimaryTextColor() ;
+        val holder = MyViewHolder(view)
         ((view.findViewById<View>(R.id.header)) as TextView).setTextColor(ColorHelper.getPrimaryTextColor())
         ((view.findViewById<View>(R.id.secondaryHeader)) as TextView).setTextColor(ColorHelper.getSecondaryTextColor())
         ((view.findViewById<View>(R.id.count)) as TextView).setTextColor(ColorHelper.getSecondaryTextColor())
@@ -173,8 +172,7 @@ class FolderLibraryAdapter constructor(private val context: Context) :
         }
         holder.title.text = fileName
         if (positionalFile.isDirectory) {
-            holder.image.setBackgroundDrawable(context.resources
-                .getDrawable(R.drawable.ic_folder_special_black_24dp))
+            holder.image.setBackgroundDrawable(context.resources.getDrawable(R.drawable.ic_folder_special_black_24dp))
             try {
                 holder.secondary.text = positionalFile.listFiles(FilenameFilter { dir, name ->
                     Log.d("FolderLibraryAdapter", "accept: $dir")
@@ -184,8 +182,7 @@ class FolderLibraryAdapter constructor(private val context: Context) :
                 Log.d("FolderLibraryAdapter", "onBindViewHolder: ")
             }
         } else {
-            holder.image.setBackgroundDrawable(context.resources
-                .getDrawable(R.drawable.ic_audiotrack_black_24dp))
+            holder.image.setBackgroundDrawable(context.resources.getDrawable(R.drawable.ic_audiotrack_black_24dp))
             holder.secondary.text = Formatter.formatFileSize(ApplicationClass.getContext(), positionalFile.length())
         }
     }
@@ -237,7 +234,7 @@ class FolderLibraryAdapter constructor(private val context: Context) :
                 popup.menu.removeItem(R.id.action_edit_track_info)
                 when {
                     clickedFile!!.isDirectory -> {
-                        popup.menu.removeItem(R.id.action_set_as_ringtone)
+
                     }
                     else -> {
                         popup.menu.removeItem(R.id.action_exclude_folder)
@@ -268,12 +265,6 @@ class FolderLibraryAdapter constructor(private val context: Context) :
             R.id.action_share -> Share()
             R.id.action_play_next -> AddToQ(Constants.ADD_TO_Q.IMMEDIATE_NEXT)
             R.id.action_add_to_q -> AddToQ(Constants.ADD_TO_Q.AT_LAST)
-            R.id.action_set_as_ringtone -> {
-                val abPath = files[filteredHeaders[clickedItemPosition]]!!.absolutePath
-                UtilityFun.SetRingtone(context,
-                    abPath,
-                    MusicLibrary.instance.getIdFromFilePath(abPath))
-            }
             R.id.action_track_info -> setTrackInfoDialog()
             R.id.action_delete -> delete()
             R.id.action_exclude_folder -> excludeFolder()
@@ -580,9 +571,6 @@ class FolderLibraryAdapter constructor(private val context: Context) :
         //create first page for folder fragment
         inflater = LayoutInflater.from(context)
         initializeFirstPage()
-        /*if(context instanceof ActivityMain){
-            recyclerView=((ActivityMain) context).findViewById(R.id.recyclerviewList);
-        }*/
         playerService = ApplicationClass.getService()!!
     }
 }

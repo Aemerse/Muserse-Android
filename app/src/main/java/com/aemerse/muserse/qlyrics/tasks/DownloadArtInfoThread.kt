@@ -149,7 +149,7 @@ class DownloadArtInfoThread constructor(
                     if (artistInfo != null) {
 
                         //put in db
-                        if (item != null && artistInfo.getFlag() === ArtistInfo.POSITIVE) {
+                        if (item != null && artistInfo.getFlag() == ArtistInfo.POSITIVE) {
                             OfflineStorageArtistBio.putArtistBioToDB(artistInfo, item)
                         }
                         val msgObj: Message = handler.obtainMessage()

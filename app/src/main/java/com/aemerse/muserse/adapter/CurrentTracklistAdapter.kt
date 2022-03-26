@@ -1,5 +1,6 @@
 package com.aemerse.muserse.adapter
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -53,7 +54,6 @@ class CurrentTracklistAdapter constructor(context: Context, dragStartListener: O
         dataItems.clear()
         Executors.newSingleThreadExecutor().execute {
             val temp: ArrayList<Int> = playerService.getTrackList()
-            //HashMap<dataItem> data = MusicLibrary.getInstance().getDataItemsForTracks();
             try {
                 for (id: Int in temp) {
                     val d: dataItem? =
@@ -63,7 +63,9 @@ class CurrentTracklistAdapter constructor(context: Context, dragStartListener: O
                     }
                 }
                 Log.d("CurrentTrack", "run: queue ready")
-                handler.post { notifyDataSetChanged() }
+                handler.post {
+                    notifyDataSetChanged()
+                }
             } catch (ignored: Exception) {
                 //ignore for now
                 Log.e("Notify", "notify")
@@ -76,6 +78,7 @@ class CurrentTracklistAdapter constructor(context: Context, dragStartListener: O
         return MyViewHolder(view)
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         if (dataItems[position] == null) return
         holder.title.text = dataItems[position]!!.title
@@ -94,7 +97,7 @@ class CurrentTracklistAdapter constructor(context: Context, dragStartListener: O
                 holder.cv.setBackgroundColor(ColorHelper.getColor(R.color.gray3))
                 holder.playAnimation.visibility = View.VISIBLE
                 when {
-                    playerService.getStatus() === playerService.PLAYING -> {
+                    playerService.getStatus() == playerService.PLAYING -> {
                         //holder.iv.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_pause_black_24dp));
                         holder.playAnimation.smoothToShow()
                     }
@@ -130,7 +133,7 @@ class CurrentTracklistAdapter constructor(context: Context, dragStartListener: O
 
     override fun onItemDismiss(position: Int) {
         when {
-            playerService!!.getCurrentTrackPosition() !== position -> {
+            playerService!!.getCurrentTrackPosition() != position -> {
                 //listOfHeader.remove(position);
                 playerService!!.removeTrack(position)
                 dataItems.removeAt(position)
@@ -282,7 +285,6 @@ class CurrentTracklistAdapter constructor(context: Context, dragStartListener: O
                 val popup = PopupMenu(context, view)
                 val inflater: MenuInflater = popup.menuInflater
                 inflater.inflate(R.menu.menu_tracks_by_title, popup.menu)
-                popup.menu.removeItem(R.id.action_set_as_ringtone)
                 popup.menu.removeItem(R.id.action_add_to_q)
                 popup.menu.removeItem(R.id.action_play_next)
                 popup.menu.removeItem(R.id.action_exclude_folder)

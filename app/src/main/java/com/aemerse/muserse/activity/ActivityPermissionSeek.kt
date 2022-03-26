@@ -104,8 +104,8 @@ class ActivityPermissionSeek : AppCompatActivity() {
                 (getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).createNotificationChannel(
                     channel2)
             }
-        } catch (ignored: Exception) {
         }
+        catch (ignored: Exception) { }
     }
 
     override fun attachBaseContext(newBase: Context) {
